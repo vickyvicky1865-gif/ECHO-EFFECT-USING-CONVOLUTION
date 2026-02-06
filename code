@@ -1,0 +1,48 @@
+clc;
+clear;
+close all;
+
+% Load built-in MATLAB audio
+load handel.mat    % Loads variables y and Fs
+x = y;
+fs = Fs;
+
+% Echo parameters
+delay = 0.5;       % seconds
+alpha = 0.6;       % attenuation factor
+
+% Create impulse response
+N = round(delay * fs);
+h = zeros(N+1,1);
+h(1) = 1;
+h(end) = alpha;
+
+% Apply convolution
+y_echo = conv(x, h);
+
+% Time axes
+t1 = (0:length(x)-1)/fs;
+t2 = (0:length(y_echo)-1)/fs;
+
+% Plot signals
+figure;
+subplot(2,1,1);
+plot(t1, x);
+xlabel('Time (seconds)');
+ylabel('Amplitude');
+title('Original Audio Signal');
+
+subplot(2,1,2);
+plot(t2, y_echo);
+xlabel('Time (seconds)');
+ylabel('Amplitude');
+title('Echoed Audio Signal');
+
+% Play sounds
+disp('Playing original sound...');
+sound(x, fs);
+pause(length(x)/fs + 1);
+
+disp('Playing echoed sound...');
+sound(y_echo, fs);
+
